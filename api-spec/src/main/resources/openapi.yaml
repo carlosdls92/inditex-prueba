@@ -1,0 +1,85 @@
+openapi: 3.0.1
+info:
+  title: INDITEX Prueba
+  description: INDITEX Prueba
+  version: 1.0
+  contact:
+    name: Carlos De los santos
+    email: carlos.dls.1992@gmail.com
+servers:
+  - url: http://localhost:8080
+    description: Generated server url
+paths:
+  /prices/find-price:
+    get:
+      tags:
+        - price-controller
+      operationId: findPrice
+      parameters:
+        - name: apply-date
+          in: query
+          required: true
+          schema:
+            type: string
+            format: date-time
+        - name: product-id
+          in: query
+          required: true
+          schema:
+            type: integer
+            format: int64
+        - name: brand-id
+          in: query
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        '200':
+          description: OK
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/PriceResponse'
+        '400':
+          description: Bad Request
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/FlashCustomError'
+components:
+  schemas:
+    FlashCustomError:
+      type: object
+      properties:
+        responseCode:
+          type: string
+        message:
+          type: string
+        errors:
+          type: array
+          items:
+            type: string
+    PriceResponse:
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int64
+        applyDate:
+          type: string
+          format: date-time
+        product:
+          type: string
+        brand:
+          type: string
+        priceToApply:
+          type: string
+        startDate:
+          type: string
+          format: date-time
+        endDate:
+          type: string
+          format: date-time
+        priceFinal:
+          type: string

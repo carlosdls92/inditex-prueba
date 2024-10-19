@@ -3,18 +3,132 @@
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
+
+    <groupId>es.com.inditex</groupId>
+    <artifactId>api-spec</artifactId>
+    <version>1.0-SNAPSHOT</version>
+    <name>${project.groupId}:${project.artifactId}</name>
+    <description>API specification</description>
+
     <parent>
         <groupId>es.com.inditex</groupId>
         <artifactId>inditex-prueba</artifactId>
         <version>1.0-SNAPSHOT</version>
     </parent>
 
-    <artifactId>api-spec</artifactId>
-
     <properties>
+        <java.version>11</java.version>
         <maven.compiler.source>11</maven.compiler.source>
         <maven.compiler.target>11</maven.compiler.target>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+
+        <openapi-generator.version>7.7.0</openapi-generator.version>
+        <openapi.package.api>es.com.inditex.controller</openapi.package.api>
+        <openapi.package.model>es.com.inditex.model</openapi.package.model>
+
+        <swagger.annotations.version>2.2.14</swagger.annotations.version>
+        <jackson-nullable.version>0.2.6</jackson-nullable.version>
     </properties>
+
+    <dependencies>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-web</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>jakarta.validation</groupId>
+            <artifactId>jakarta.validation-api</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>io.swagger.core.v3</groupId>
+            <artifactId>swagger-annotations</artifactId>
+            <version>${swagger.annotations.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.openapitools</groupId>
+            <artifactId>jackson-databind-nullable</artifactId>
+            <version>${jackson-nullable.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>javax.servlet</groupId>
+            <artifactId>javax.servlet-api</artifactId>
+            <version>4.0.1</version>
+            <scope>compile</scope>
+        </dependency>
+        <dependency>
+            <groupId>javax.annotation</groupId>
+            <artifactId>javax.annotation-api</artifactId>
+            <version>1.3.2</version>
+        </dependency>
+        <dependency>
+            <groupId>javax.validation</groupId>
+            <artifactId>validation-api</artifactId>
+            <version>2.0.1.Final</version>
+        </dependency>
+        <dependency>
+            <groupId>org.projectlombok</groupId>
+            <artifactId>lombok</artifactId>
+            <scope>annotationProcessor</scope>
+        </dependency>
+    </dependencies>
+
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.openapitools</groupId>
+                <artifactId>openapi-generator-maven-plugin</artifactId>
+                <version>${openapi-generator.version}</version>
+                <executions>
+                    <execution>
+                        <id>generate-api-code</id>
+                        <goals>
+                            <goal>generate</goal>
+                        </goals>
+                        <configuration>
+                            <inputSpec>${project.basedir}/src/main/resources/openapi.yaml</inputSpec>
+                            <generatorName>spring</generatorName>
+                            <library>spring-boot</library>
+                            <modelPackage>es.com.inditex.model</modelPackage>
+                            <packageName>es.com.inditex.model</packageName>
+                            <generateApis>true</generateApis>
+                            <generateModels>true</generateModels>
+                            <generateModelTests>false</generateModelTests>
+                            <generateSupportingFiles>false</generateSupportingFiles>
+                            <generateApiDocumentation>false</generateApiDocumentation>
+                            <ignoreFileOverride>${project.basedir}/.openapi-generator.ignore</ignoreFileOverride>
+                            <configOptions>
+                                <interfaceOnly>true</interfaceOnly>
+                                <skipDefaultInterface>true</skipDefaultInterface>
+                                <java11>true</java11>
+                                <dateLibrary>java11</dateLibrary>
+                                <apiPackage>${openapi.package.api}</apiPackage>
+                                <modelPackage>${openapi.package.model}</modelPackage>
+
+                                <library>spring-cloud</library>
+                                <title>INDITEX-MODEL</title>
+                                <documentationProvider>springdoc</documentationProvider>
+                                <useResponseEntity>false</useResponseEntity>
+                                <useTags>true</useTags>
+
+                                <additionalModelTypeAnnotations>
+                                    @lombok.Builder
+                                    @lombok.Data
+                                    @lombok.NoArgsConstructor
+                                    @lombok.AllArgsConstructor
+                                </additionalModelTypeAnnotations>
+                            </configOptions>
+                            <typeMappings>
+                                <typeMapping>string+date-time=LocalDateTime</typeMapping>
+                            </typeMappings>
+                            <importMappings>
+                                <importMapping>LocalDateTime=java.time.LocalDateTime</importMapping>
+                            </importMappings>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+        </plugins>
+    </build>
 
 </project>
